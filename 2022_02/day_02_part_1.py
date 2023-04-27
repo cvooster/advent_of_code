@@ -34,6 +34,7 @@ def main():
 
 
 def evaluate_strategy_guide(filename):
+    """Read a strategy guide from a file, and evaluate the total score."""
     with open(filename) as file_object:
         return sum([SCORE_ROUND[line.rstrip()] for line in file_object])
 
