@@ -1,6 +1,5 @@
 """This module sums the top-n total number of calories carried by the elves."""
 
-import pytest
 import sys
 
 EXAMPLE_FILENAME = "input_01_example.txt"

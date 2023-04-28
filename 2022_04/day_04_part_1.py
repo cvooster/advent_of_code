@@ -1,6 +1,5 @@
 """This module determines the number of pairs with sub/superset assignments."""
 
-import pytest
 import re
 
 EXAMPLE_FILENAME = "input_04_example.txt"

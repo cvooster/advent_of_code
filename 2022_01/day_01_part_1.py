@@ -1,6 +1,5 @@
 """This module finds the maximum total number of calories carried by an elf."""
 
-import pytest
 import sys
 
 EXAMPLE_FILENAME = "input_01_example.txt"

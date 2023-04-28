@@ -1,7 +1,5 @@
 """This module calculates the total score if play follows the strategy guide."""
 
-import pytest
-
 EXAMPLE_FILENAME = "input_02_example.txt"
 EXAMPLE_ANSWER = 15
 

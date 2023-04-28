@@ -1,6 +1,5 @@
 """This module sums the priorities of the badge item types."""
 
-import pytest
 import sys
 
 EXAMPLE_FILENAME = "input_03_example.txt"

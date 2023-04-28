@@ -1,6 +1,5 @@
 """This module sums the priorities of items that appear in two compartments."""
 
-import pytest
 import sys
 
 EXAMPLE_FILENAME = "input_03_example.txt"
@@ -27,10 +26,10 @@ def get_item(rucksack):
     """Given a rucksack, get the item type that appears in two compartments."""
     if len(rucksack) % 2 != 0:
         sys.exit("There exists a rucksack with an odd number of items!")
-    compartment1 = rucksack[: len(rucksack) // 2]
-    compartment2 = rucksack[len(rucksack) // 2 :]
+    compartment_1 = rucksack[: len(rucksack) // 2]
+    compartment_2 = rucksack[len(rucksack) // 2 :]
 
-    duplicate_items = set(compartment1).intersection(set(compartment2))
+    duplicate_items = set(compartment_1).intersection(set(compartment_2))
     if len(duplicate_items) != 1:
         sys.exit(f"A rucksack exists with {len(duplicate_items)} shared items!")
     return duplicate_items.pop()
