@@ -11,7 +11,6 @@ line length set at 80 characters.
 
 ## To Be Added
 
-* [] Day 15
-* [] Day 16
-* [] Day 19
-* [] Day 22
+* [ ] Day 16
+* [ ] Day 19
+* [ ] Day 22
