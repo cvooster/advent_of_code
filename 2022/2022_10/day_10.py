@@ -31,8 +31,9 @@ def compute_register_values(filename):
     register_values = [current_value]
     for instruction in program_lines:
         register_values.append(current_value)
-        if instruction[0:4] == "addx":
-            current_value += int(instruction[5:])
+        instruction_parts = instruction.split(" ")
+        if instruction_parts[0] == "addx":
+            current_value += int(instruction_parts[1])
             register_values.append(current_value)
     return register_values
 
@@ -40,7 +41,7 @@ def compute_register_values(filename):
 def sum_signal_strengths(register_values):
     """Sum the six signal strengths of special interest."""
     try:
-        return sum([register_values[cycle - 1] * cycle for cycle in CYCLES])
+        return sum(register_values[cycle - 1] * cycle for cycle in CYCLES)
     except IndexError as e:
         raise IndexError(f"Program took less than {CYCLES[-1]} cycles!") from e
 

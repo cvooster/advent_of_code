@@ -61,9 +61,9 @@ def play_keep_away(monkeys, nr_rounds, worry_management):
                 worry_level = monkey.throw_item()
                 worry_level = monkey.operation_function(worry_level)
                 if worry_management == 1:
-                    worry_level = worry_level // 3
+                    worry_level //= 3
                 elif worry_management == 2:
-                    worry_level = worry_level % factor_out
+                    worry_level %= factor_out
                 is_divisible = (worry_level % monkey.test_divisor) == 0
                 receiver_idx = monkey.test_outcomes[is_divisible]
                 monkeys[receiver_idx].catch_item(worry_level)

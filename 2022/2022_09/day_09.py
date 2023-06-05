@@ -45,7 +45,7 @@ def simulate_rope(nr_knots, directions, move_sizes):
             elif direction == "R":
                 knots_x[0] += 1
             for idx in range(1, nr_knots):
-                knots_x, knots_y = move_knot(knots_x, knots_y, idx)
+                knots_y, knots_x = move_knot(knots_y, knots_x, idx)
             is_visited[knots_y[-1] - min_y][knots_x[-1] - min_x] = True
     return sum(sum(row) for row in is_visited)
 
@@ -71,7 +71,7 @@ def bound_rope_positions(directions, move_sizes):
     return min_y, max_y, min_x, max_x
 
 
-def move_knot(knots_x, knots_y, idx):
+def move_knot(knots_y, knots_x, idx):
     """Move the (idx+1)th knot in response to the idx-th knot."""
     dist_y = knots_y[idx - 1] - knots_y[idx]
     dist_x = knots_x[idx - 1] - knots_x[idx]
@@ -84,7 +84,7 @@ def move_knot(knots_x, knots_y, idx):
     elif -1 <= dist_y <= 1 and abs(dist_x) == 2:
         knots_y[idx] = knots_y[idx - 1]
         knots_x[idx] += dist_x // 2
-    return knots_x, knots_y
+    return knots_y, knots_x
 
 
 if __name__ == "__main__":
