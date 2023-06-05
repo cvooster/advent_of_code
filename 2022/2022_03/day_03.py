@@ -46,7 +46,7 @@ def sum_badge_type_priorities(filename):
 
 def get_badge(rucksack_group):
     """Get the item type that appears in all rucksacks in a given group."""
-    rucksack_sets = [set(rucksack) for rucksack in rucksack_group]
+    rucksack_sets = (set(rucksack) for rucksack in rucksack_group)
     common_items = set.intersection(*rucksack_sets)
     if len(common_items) != 1:
         raise ValueError(f"Group has {len(common_items)} item types in common!")

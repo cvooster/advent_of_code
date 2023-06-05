@@ -15,10 +15,10 @@ def sum_top_totals(filename, cut_off_rank):
     """Read file input, and sum the {cut_off_rank}-highest totals."""
     calorie_lines = aoc.read_stripped_lines(filename, add_line="")
     sorted_totals = sorted(calculate_elf_totals(calorie_lines))
-    try:
+    if cut_off_rank <= len(sorted_totals):
         return sum(sorted_totals[-cut_off_rank:])
-    except IndexError as e:
-        raise IndexError("Cut-off rank exceeds the number of elves!") from e
+    else:
+        raise IndexError("Cut-off rank exceeds the number of elves!")
 
 
 def calculate_elf_totals(calorie_lines):

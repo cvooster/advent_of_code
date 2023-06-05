@@ -14,7 +14,6 @@ def main():
 def get_first_start_marker(filename, pattern_length):
     """Determine the number of characters before a start marker is detected."""
     signal = aoc.read_stripped(filename)
-
     run_length = 0
     for idx, char in enumerate(signal):
         try:

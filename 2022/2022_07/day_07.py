@@ -26,15 +26,15 @@ def main():
 def sum_small_directory_sizes(filename):
     """Obtain the (size of) directories, and sum the small ones."""
     directories = get_directories(filename)
-    if not all([d.count_ls >= 1 for d in directories]):
+    if not all(d.count_ls >= 1 for d in directories):
         raise RuntimeError("Not all directories' contents have been checked!")
-    return sum([d.size for d in directories if d.size <= SMALL_SIZE])
+    return sum(d.size for d in directories if d.size <= SMALL_SIZE)
 
 
 def get_size_delete_directory(filename):
     """Obtain the (size of) directories, and obtain smallest size to delete."""
     directories = get_directories(filename)
-    if not all([d.count_ls >= 1 for d in directories]):
+    if not all(d.count_ls >= 1 for d in directories):
         raise RuntimeError("Not all directories' contents have been checked!")
     directories.sort(key=lambda d: d.size)
     min_del_size = REQUIRED_SPACE - (AVAILABLE_SPACE - directories[-1].size)
@@ -45,6 +45,8 @@ def get_directories(filename):
     """Read file input, and identify the directories and their size."""
     file_regex = re.compile(r"(\d+) (\S+)")
     command_history = aoc.read_stripped_lines(filename)
+    if command_history[0] != "$ cd /":
+        raise ValueError("First command does not access the root directory!")
 
     root = Directory("/")
     directories = [root]
@@ -71,13 +73,13 @@ class Directory:
     """Class to represent a directory."""
 
     def __init__(self, name, parent=None):
-        """Create a directory with a parent, or an empty root directory."""
+        """Create a directory with a parent, or a root directory."""
         self.name = name
         self.size = 0
         self.parent = parent
         self.children = []
         self.count_ls = 0
-        if parent:
+        if parent is not None:
             self.parent.add_directory(self)
 
     def add_directory(self, directory):
@@ -87,7 +89,7 @@ class Directory:
     def update_size(self, file_size):
         """Increase the size of this directory and all its ascendants."""
         self.size += file_size
-        if self.parent:
+        if self.parent is not None:
             self.parent.update_size(file_size)
 
 

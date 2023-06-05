@@ -19,7 +19,7 @@ def count_supersets(filename):
     pair_lines = aoc.read_stripped_lines(filename)
     nr_supersets = 0
     for line in pair_lines:
-        range_endpoints = [int(x) for x in pair_regex.search(line).groups()]
+        range_endpoints = (int(x) for x in pair_regex.search(line).groups())
         nr_supersets += is_superset(*range_endpoints)
     return nr_supersets
 
@@ -37,13 +37,13 @@ def count_overlaps(filename):
     pair_lines = aoc.read_stripped_lines(filename)
     nr_overlaps = 0
     for line in pair_lines:
-        range_endpoints = [int(x) for x in pair_regex.search(line).groups()]
+        range_endpoints = (int(x) for x in pair_regex.search(line).groups())
         nr_overlaps += has_overlap(*range_endpoints)
     return nr_overlaps
 
 
 def has_overlap(lower_1, upper_1, lower_2, upper_2):
-    """Check whether range 1 is an overlap with range 2."""
+    """Check whether range 1 has an overlap with range 2."""
     return not (lower_1 > upper_2 or upper_1 < lower_2)
 
 
