@@ -12,13 +12,13 @@ import aoc_tools as aoc
 CHAMBER_WIDTH = 7
 HORZ_DIST = 2
 VERT_DIST = 4
-SHAPE_UNITS = [
+SHAPE_UNITS = (
     ((0, 0), (0, 1), (0, 2), (0, 3)),
     ((0, 1), (1, 0), (1, 1), (1, 2), (2, 1)),
     ((0, 0), (0, 1), (0, 2), (1, 2), (2, 2)),
     ((0, 0), (1, 0), (2, 0), (3, 0)),
     ((0, 0), (0, 1), (1, 0), (1, 1)),
-]
+)
 
 
 def main():
@@ -32,14 +32,12 @@ def main():
 def simulate_falling_rocks(filename, nr_rocks):
     """Simulate the falling of rocks, and obtain the tower height."""
     chamber, shapes, jet_pattern = initialize_simulation(filename)
-    shape_idx = 0
     jet_idx = 0
-    sim_history = {
-        "shape_idx": [shape_idx],
-        "jet_idx": [jet_idx],
-        "height": [0],
-        "depths": [[VERT_DIST] * CHAMBER_WIDTH],
-    }
+    shape_idx = 0
+    depths = [[VERT_DIST] * CHAMBER_WIDTH]
+    height = 0
+    state_hist = [(jet_idx, shape_idx, depths)]
+    height_hist = [height]
     has_repeated = False
 
     for i in range(nr_rocks):
@@ -50,20 +48,18 @@ def simulate_falling_rocks(filename, nr_rocks):
         height = len(chamber) - VERT_DIST
 
         if not has_repeated:
-            previous = check_repetition(sim_history, shape_idx, jet_idx, depths)
+            previous = check_repetition(state_hist, jet_idx, shape_idx, depths)
             if previous is not None:
                 has_repeated = True
                 cycle_length = (i + 1) - previous
-                cycle_height_increase = height - sim_history["height"][previous]
+                cycle_height_increase = height - height_hist[previous]
                 transient_length = nr_rocks % cycle_length
 
-        sim_history["shape_idx"].append(shape_idx)
-        sim_history["jet_idx"].append(jet_idx)
-        sim_history["depths"].append(depths)
-        sim_history["height"].append(height)
+        state_hist.append((jet_idx, shape_idx, depths))
+        height_hist.append(height)
 
         if has_repeated and i >= transient_length - 1:
-            height_transient = sim_history["height"][transient_length]
+            height_transient = height_hist[transient_length]
             height_cycles = (nr_rocks // cycle_length) * cycle_height_increase
             height = height_transient + height_cycles
             break
@@ -94,13 +90,10 @@ def determine_depths(chamber):
     return depths
 
 
-def check_repetition(sim_history, shape_idx, jet_idx, depths):
+def check_repetition(state_history, jet_idx, shape_idx, depths):
     """Check whether shape, jet index, and depths have occurred before."""
-    zipped_history = zip(
-        sim_history["shape_idx"], sim_history["jet_idx"], sim_history["depths"]
-    )
     try:
-        previous = list(zipped_history).index((shape_idx, jet_idx, depths))
+        previous = state_history.index((jet_idx, shape_idx, depths))
     except ValueError:
         previous = None
     return previous
@@ -150,7 +143,7 @@ def simulate_single_rock(chamber, shape, jet_pattern, jet_idx):
     # In the chamber, ensure VERT_DIST rows on top of highest stopped rock:
     if bottom_left_y + shape.height > len(chamber) - VERT_DIST:
         for _ in range(bottom_left_y + shape.height - len(chamber) + VERT_DIST):
-            chamber.append([False for _ in range(CHAMBER_WIDTH)])
+            chamber.append([False] * CHAMBER_WIDTH)
     return jet_idx
 
 

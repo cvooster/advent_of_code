@@ -48,7 +48,7 @@ def initialize_grid(filename, has_floor):
         max_y = comax_y + FLOOR_DISTANCE
         min_x = min(comin_x - 1, SAND_ENTRANCE[0] - max_y)
         max_x = max(comax_x + 1, SAND_ENTRANCE[0] + max_y)
-    is_rock = [[False] * (max_x - min_x + 1) for _ in range(0, max_y + 1)]
+    is_rock = [[False] * (max_x - min_x + 1) for _ in range(max_y + 1)]
 
     # Set points on the rock path (and the floor) to True:
     for rock_path in rock_paths:

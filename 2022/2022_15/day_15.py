@@ -93,8 +93,8 @@ def find_distress_beacon(sensors, range_x, range_y):
     between intervals or because the bottom-left-most or top-right-most position
     is not covered.
 
-    Closer consideration shows that it suffices to check only a selected number
-    of top-left distances: those just before the coverage of a sensor starts and
+    Closer examination shows that it suffices to check only a selected number of
+    top-left distances: those just before the coverage of a sensor starts and
     just after the coverage of a sensor ends, and those that include the bottom-
     left and top-right corner of the search area.
 

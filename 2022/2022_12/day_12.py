@@ -3,7 +3,7 @@ Solution --- Day 12: Hill Climbing Algorithm ---
 
 Note that instead of using Dijkstra's algorithm to compute the shortest path to
 the sink, I use it to compute the shortest path from the sink (either to a given
-source or to all squares with elevation level 'a'.)
+source or to all squares with elevation level 'a').
 """
 
 import aoc_tools as aoc
@@ -108,12 +108,13 @@ def get_sink_source_distance(elevation, distances, source=None):
     if source is not None:
         shortest_length = distances[source[0]][source[1]]
     else:
-        lengths = []
+        shortest_length = upper_bound
         for idx_y in range(grid_height):
             for idx_x in range(grid_width):
                 if elevation[idx_y][idx_x] == ord("a"):
-                    lengths.append(distances[idx_y][idx_x])
-        shortest_length = min(lengths)
+                    shortest_length = min(
+                        shortest_length, distances[idx_y][idx_x]
+                    )
     if shortest_length == upper_bound:
         raise ValueError("Reaching the sink is impossible!")
     return shortest_length
