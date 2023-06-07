@@ -56,11 +56,12 @@ def check_facets(cube_list):
 
 def map_accessibility(cube_list):
     """
-    Determine whether empty spaces are accessible from outside. To this end, a
-    box is created that contains the droplet in its interior. The outside is
-    initialized as accessible, and iteratively empty spaces in the interior
-    are identified as accessible until no new accessible spaces can be
-    identified.
+    Determine whether empty spaces are accessible from outside.
+
+    A box is created that contains the droplet in its intertior, and the outside
+    is initialized as accessible. The procedure then iteratively identifies
+    empty spaces in the interior as accessible until no new accessible spaces
+    are identified.
     """
     box_min = [min(c[dim] for c in cube_list) - 1 for dim in range(3)]
     box_max = [max(c[dim] for c in cube_list) + 1 for dim in range(3)]

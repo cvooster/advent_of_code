@@ -26,7 +26,7 @@ def initialize_list(filename, decryption_key):
     """Read file input, and generate the original list."""
     number_lines = aoc.read_stripped_lines(filename)
     if number_lines.count("0") != 1:
-        raise ValueError("There is not one value '0' in the input file!")    
+        raise ValueError("There is not one value '0' in the input file!")
     original_list = []
     for idx, line in enumerate(number_lines):
         original_list.append(MovingNumber(int(line) * decryption_key, idx))
@@ -35,10 +35,11 @@ def initialize_list(filename, decryption_key):
 
 def mix_numbers(original_list, current_list):
     """
-    Move all numbers in the order they originally appear in the file. Note that
-    the circularity in this process implies that if a number moves off the left
-    end of the list, it never ends up in the right-most place of the list, and
-    vice versa.
+    Move all numbers in the order they originally appear in the file.
+
+    Note that the circularity in this process implies that if a number moves off
+    the left end of the list, it never ends up in the right-most place of the
+    list, and vice versa.
     """
     for moving_number in original_list:
         # Obtain the new index of this number:

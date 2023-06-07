@@ -83,20 +83,20 @@ def find_distress_beacon(sensors, range_x, range_y):
     'starts' and 'ends' at a minimum and maximum Manhattan distance from the
     top-left corner of the search area. For a fixed top-left distance between
     this minimum and maximum, the positions in the coverage area of a sensor
-    from an interval looking from bottom-left to top-right. Moreover, the
-    distance from the start and end points of this interval to the bottom-left
-    corner of the search area is the same for every top-left distance.
+    form an interval looking from bottom-left to top-right. Moreover, the
+    distances from the start and end points of this interval to the bottom-left
+    corner of the search area are the same for every top-left distance.
 
     One possibility is to check for every top-left distance whether, among all
     positions on the diagonal with that top-left distance, there exists one not
     covered by the sensors' intervals. That may be either because there is a gap
     between intervals or because the bottom-left-most or top-right-most position
-    is not covered.
+    on the diagonal is not covered.
 
     Closer examination shows that it suffices to check only a selected number of
     top-left distances: those just before the coverage of a sensor starts and
-    just after the coverage of a sensor ends, and those that include the bottom-
-    left and top-right corner of the search area.
+    just after the coverage of a sensor ends, supplemented by those that include
+    the bottom-left and top-right corner of the search area.
 
     NOTE: In the code below, top-left distance of position (x,y) is defined as
     x + y and bottom-left distance of position (x,y) is defined as x - y,
@@ -122,13 +122,13 @@ def find_distress_beacon(sensors, range_x, range_y):
         elif top_left_distance > range_y[0] + range_x[1]:
             max_bottom_left = 2 * range_x[1] - top_left_distance
 
-        # Determine the sensors with coverage on this diagonal:
+        # Determine the sensors with coverage on diagonal:
         active_sensors = []
         for sensor in sensors:
             if sensor.min_top_left <= top_left_distance <= sensor.max_top_left:
                 active_sensors.append(sensor)
 
-        # Check whether bottom-left-most position is covered:
+        # Check whether bottom-left-most position on diagonal is covered:
         if active_sensors:
             current_min = active_sensors[0].min_bottom_left
             current_max = active_sensors[0].max_bottom_left
@@ -138,9 +138,9 @@ def find_distress_beacon(sensors, range_x, range_y):
             is_found = True
             break
 
-        # Check whether coverage intervals of sensors are adjacent (note that
-        # not every combination of a top_left_distance and bottom_left_distance
-        # corresponds with integer x and y coordinates; hence the parity tests):
+        # Check whether coverage intervals of sensors are adjacent:
+        # (Not all combinations of a top_left_distance and bottom_left_distance
+        # corresponds with integer x and y coordinates; hence the parity tests.)
         for sensor_idx in range(1, len(active_sensors)):
             sensor = active_sensors[sensor_idx]
             if sensor.min_bottom_left <= current_max + 1:
@@ -158,7 +158,7 @@ def find_distress_beacon(sensors, range_x, range_y):
                 is_found = True
                 break
 
-        # Check whether top-right-most position is covered:
+        # Check whether top-right-most position on diagonal is covered:
         if not is_found and current_max <= max_bottom_left:
             pos_x = (top_left_distance + max_bottom_left) // 2
             pos_y = (top_left_distance - max_bottom_left) // 2

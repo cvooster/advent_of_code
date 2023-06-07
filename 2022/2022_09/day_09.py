@@ -72,7 +72,7 @@ def bound_rope_positions(directions, move_sizes):
 
 
 def move_knot(knots_y, knots_x, idx):
-    """Move the (idx+1)th knot in response to the idx-th knot."""
+    """Move the (idx+1)-th knot in response to the idx-th knot."""
     dist_y = knots_y[idx - 1] - knots_y[idx]
     dist_x = knots_x[idx - 1] - knots_x[idx]
     if abs(dist_y) == 2 and abs(dist_x) == 2:

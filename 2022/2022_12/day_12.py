@@ -1,9 +1,9 @@
 """
 Solution --- Day 12: Hill Climbing Algorithm ---
 
-Note that instead of using Dijkstra's algorithm to compute the shortest path to
-the sink, I use it to compute the shortest path from the sink (either to a given
-source or to all squares with elevation level 'a').
+Instead of using Dijkstra's algorithm to compute the shortest path to the sink,
+this solution uses it to compute the shortest distance from the sink (either to
+a fixed source or to all squares with elevation level 'a').
 """
 
 import aoc_tools as aoc
@@ -18,7 +18,7 @@ def main():
 
 
 def compute_shortest(filename, fix_source=True):
-    """Apply Dijkstra's algorithm, and get the length of the shortest path."""
+    """Compute the length of the shortest path using Dijkstra's algorithm."""
     elevation, source, sink = set_heightmap(filename)
     distances = compute_distances_from_sink(elevation, sink)
     if fix_source:
@@ -51,7 +51,7 @@ def set_heightmap(filename):
 
 
 def compute_distances_from_sink(elevation, sink):
-    """Apply Dijkstra's algorithm. Neighbors must satisfy height condition."""
+    """Use Dijkstra's algorithm to compute all distances from the sink."""
     grid_height = len(elevation)
     grid_width = len(elevation[0])
     upper_bound = grid_height * grid_width
@@ -100,7 +100,7 @@ def compute_distances_from_sink(elevation, sink):
 
 
 def get_sink_source_distance(elevation, distances, source=None):
-    """From all distances from the sink, select the one to the (best) source."""
+    """Select the distance to the given source or to the best source."""
     grid_height = len(elevation)
     grid_width = len(elevation[0])
     upper_bound = grid_height * grid_width

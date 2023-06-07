@@ -91,7 +91,7 @@ def determine_depths(chamber):
 
 
 def check_repetition(state_history, jet_idx, shape_idx, depths):
-    """Check whether shape, jet index, and depths have occurred before."""
+    """Check whether jet index, shape, and depths have occurred before."""
     try:
         previous = state_history.index((jet_idx, shape_idx, depths))
     except ValueError:

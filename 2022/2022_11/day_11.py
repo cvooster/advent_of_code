@@ -1,14 +1,15 @@
-"""Solution --- Day 11: Monkey in the Middle ---
+"""
+Solution --- Day 11: Monkey in the Middle ---
 
-In part 2, I use that observation that because modulo congruence is compatible
-with translation, scaling, and exponentation (which encompasses the operations
-of all monkeys in the input file), subtracting an integer multiple of the
-product of all monkey's divisors in the current round will not change the
-remainder of the modulo operation where the product of all monkey's divisors is
-used as modulus in any future round. As this divisor product is an integer
-multiple of each individual monkey's divisor, it will not change the remainder
-of the modulo operation where an individual monkey's divisor is used as modulus
-in future rounds either; therefore, inspection outcomes will not change.
+Part 2 uses the observation that because modulo congruence is compatible with
+translation, scaling, and exponentiation (which encompasses the operations of all
+monkeys in the input file). It follows that subtracting an integer multiple of
+the product of all monkey's divisors in the current round will in no future
+round change the remainder of the modulo operation where the product of all
+monkeys' divisors is used as modulus. As this divisor product is an integer
+multiple of each individual monkey's divisor, neither will it in any future
+round change the remainder of the modulo operation where an individual monkey's
+divisor is used as modulus; therefore, inspection outcomes will not change.
 """
 
 from collections import deque

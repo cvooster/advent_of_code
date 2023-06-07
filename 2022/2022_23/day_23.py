@@ -124,9 +124,10 @@ def simulate_execution(elves):
 
 def generate_pos_grid(elves):
     """
-    Generate a grid in which elf positions are marked as True. An extra top and
-    bottom row and extra left and right column is added to avoid IndexErrors
-    when elves are checking whether a direction is valid.
+    Generate a grid in which elf positions are marked as True.
+
+    An extra top and bottom row and extra left and right column is added to
+    avoid IndexErrors when elves are checking whether a direction is valid.
     """
     min_x, max_x, min_y, max_y = get_rectangle_dimensions(elves)
     grid_height = max_y - min_y + 1 + 2
@@ -141,8 +142,9 @@ def generate_pos_grid(elves):
 
 def generate_proposal_grid(elves):
     """
-    Generate a grid that counts the number of elves proposing a position. An
-    extra top and bottom row and extra left and right column is added because
+    Generate a grid that counts the number of elves proposing a position.
+
+    An extra top and bottom row and extra left and right column is added because
     elves' proposals can be outside the current smallest rectangle.
     """
     min_x, max_x, min_y, max_y = get_rectangle_dimensions(elves)

@@ -39,17 +39,20 @@ def convert_to_decimal(snafu):
 
 def convert_to_snafu(decimal):
     """
-    Convert a given decimal number to a SNAFU number (string). Note that the
-    highest decimal number that can be formed using n SNAFU digits is
-    \sum_{i=0}^{n-1} 2 * 5^{i} = (5^{n} - 1)/2. Hence, the number of digits
+    Convert a given decimal number to a SNAFU number (string).
+
+    Note that the highest decimal number that can be formed using n SNAFU digits
+    is \sum_{i=0}^{n-1} 2 * 5^{i} = (5^{n} - 1)/2. Hence, the number of digits
     needed to represent a given decimal number can be obtained by taking a
-    logarithm and rounding up to the nearest integer. To obtain the values of
-    the SNAFU digits, make the following observation: If there are i remaining
-    digits to represent (the remainder of) a decimal number, which must be in
-    the range [-5^{i}-1)/2, 5^{i}-1)/2], there exists a unique multiple of
-    5^{i-1} that can be subtracted to end up in the subrange [-5^{i-1}-1)/2,
-    5^{i-1}-1)/2], as the latter range covers exactly 5^{i-1}-1 decimal numbers.
-    This multiplier will then be the value of the i-th SNAFU digit.
+    logarithm and rounding up to the nearest integer.
+
+    To obtain values of the SNAFU digits, make the following observation: If
+    there are i remaining digits to represent (the remainder of) a decimal
+    number, which must be in the range [-(5^{i}-1)/2, (5^{i}-1)/2], there exists
+    a unique multiple of 5^{i-1} that can be subtracted to end up in the
+    subrange [-(5^{i-1}-1)/2, (5^{i-1}-1)/2], as the latter range covers exactly
+    5^{i-1}-1 decimal numbers. This multiplier will then be the value of the
+    i-th SNAFU digit.
     """
     snafu_total = ""
     nr_digits = math.ceil((math.log(2 * decimal + 1, 5)))
