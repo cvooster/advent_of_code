@@ -19,8 +19,8 @@ def calculate_tree_house_metrics(filename):
     is_visibles = [[False] * grid_width for _ in range(grid_height)]
     scenic_scores = [[-1] * grid_width for _ in range(grid_height)]
 
-    for idx_y in range(0, grid_height):
-        for idx_x in range(0, grid_width):
+    for idx_y in range(grid_height):
+        for idx_x in range(grid_width):
             scenic_score = 1
             is_visible = False
             for d_y, d_x in [(0, -1), (0, 1), (-1, 0), (1, 0)]:

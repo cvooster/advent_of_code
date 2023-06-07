@@ -25,6 +25,8 @@ def sum_grove_coordinates(filename, decryption_key, nr_mixes):
 def initialize_list(filename, decryption_key):
     """Read file input, and generate the original list."""
     number_lines = aoc.read_stripped_lines(filename)
+    if number_lines.count("0") != 1:
+        raise ValueError("There is not one value '0' in the input file!")    
     original_list = []
     for idx, line in enumerate(number_lines):
         original_list.append(MovingNumber(int(line) * decryption_key, idx))

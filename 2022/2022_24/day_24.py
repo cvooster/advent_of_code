@@ -1,4 +1,13 @@
-"""Solution --- Day 24: Blizzard Basin ---"""
+"""
+Solution --- Day 24: Blizzard Basin ---
+
+Note that every grid_width * grid_height minutes, the locations of blizzards
+repeat themselves. If during such a cycle, it is not possible to get one 'step'
+closer to the sink, it follows that the sink can never be reached. Hence, if
+the sink can be reached, it takes at most (grid_height * grid_width) *
+(grid_height * grid_width + 1) minutes. Furthermore, if the sink can be reached
+from the source, then the source can be reached from the sink.
+"""
 
 import copy
 
@@ -16,10 +25,12 @@ def main():
 def compute_shortest(filename, nr_sink_visits):
     """Compute shortest back-and-forth path for given number of sink visits."""
     blizzards, grid_height, grid_width = initialize_blizzards(filename)
+    grid_size = grid_width * grid_height
+
     minutes = 0
     no_reach = {
         "source": False,
-        "in": [[False for _ in range(grid_width)] for _ in range(grid_height)],
+        "in": [[False] * grid_width for _ in range(grid_height)],
         "sink": False,
     }
 
@@ -29,8 +40,12 @@ def compute_shortest(filename, nr_sink_visits):
         while not can_reach["sink"]:
             can_reach = dynamic_programming_update(blizzards, can_reach)
             minutes += 1
+            if minutes == grid_size * (grid_size + 1):
+                raise ValueError("Reaching the sink is impossible!")
+            
         if sink_visit == nr_sink_visits - 1:
             break
+
         can_reach = copy.deepcopy(no_reach)
         can_reach["sink"] = True
         while not can_reach["source"]:
@@ -55,7 +70,7 @@ def initialize_blizzards(filename):
 
 
 def dynamic_programming_update(blizzards, can_reach):
-    """Given reachible locations, identify reachables after one more minute."""
+    """Given reachable locations, identify reachables after one more minute."""
     old_source = can_reach["source"]
     old_sink = can_reach["sink"]
     old_in = can_reach["in"]

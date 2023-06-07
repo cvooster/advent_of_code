@@ -51,8 +51,8 @@ def yell_numbers(monkeys, override_humn):
     root_input_2 = root_monkey.inputs[1]
     while root_input_1.constant is None or root_input_2.constant is None:
         for monkey in monkeys:
-            if monkey.constant is None and not any(
-                i.constant is None for i in monkey.inputs
+            if monkey.constant is None and all(
+                i.constant is not None for i in monkey.inputs
             ):
                 monkey.perform_calculation()
     if not override_humn:
@@ -73,13 +73,13 @@ class Monkey:
         self.name = name
         self.constant = constant
         self.slope = slope
-        self.inputs = []
+        self.inputs = [None, None]
         self.operation = ""
 
     def set_calculation(self, input_1, input_2, operation):
         """Set the inputs and operator of the basic math operation."""
-        self.inputs.append(input_1)
-        self.inputs.append(input_2)
+        self.inputs[0] = input_1
+        self.inputs[1] = input_2
         self.operation = operation
 
     def perform_calculation(self):

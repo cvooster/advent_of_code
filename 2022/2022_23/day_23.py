@@ -173,7 +173,7 @@ def get_rectangle_dimensions(elves):
 
 
 class Elf:
-    "Class to represent a elf."
+    "Class to represent an elf."
 
     def __init__(self, pos_x, pos_y):
         "Create an elf, with a position and (possibly pending) proposal."

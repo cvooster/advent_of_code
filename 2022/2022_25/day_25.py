@@ -18,6 +18,25 @@ def compute_snafu_total(filename):
     return convert_to_snafu(total_requirement)
 
 
+def convert_to_decimal(snafu):
+    """Convert a given SNAFU number (string) to a decimal number."""
+    fuel_requirement = 0
+    for i, snafu_digit in enumerate(snafu[-1::-1]):
+        if snafu_digit == "=":
+            fuel_requirement -= 2 * (5**i)
+        elif snafu_digit == "-":
+            fuel_requirement -= 1 * (5**i)
+        elif snafu_digit == "0":
+            pass
+        elif snafu_digit == "1":
+            fuel_requirement += 1 * (5**i)
+        elif snafu_digit == "2":
+            fuel_requirement += 2 * (5**i)
+        else:
+            raise ValueError("Unknown SNAFU digit encountered!")
+    return fuel_requirement
+
+
 def convert_to_snafu(decimal):
     """
     Convert a given decimal number to a SNAFU number (string). Note that the
@@ -49,25 +68,6 @@ def convert_to_snafu(decimal):
             snafu_total += "2"
         decimal -= digit_value * (5 ** (i - 1))
     return snafu_total
-
-
-def convert_to_decimal(snafu):
-    """Convert a given SNAFU number (string) to a decimal number."""
-    fuel_requirement = 0
-    for i, snafu_digit in enumerate(snafu[-1::-1]):
-        if snafu_digit == "=":
-            fuel_requirement -= 2 * (5**i)
-        elif snafu_digit == "-":
-            fuel_requirement -= 1 * (5**i)
-        elif snafu_digit == "0":
-            pass
-        elif snafu_digit == "1":
-            fuel_requirement += 1 * (5**i)
-        elif snafu_digit == "2":
-            fuel_requirement += 2 * (5**i)
-        else:
-            raise ValueError("Unknown SNAFU digit encountered!")
-    return fuel_requirement
 
 
 if __name__ == "__main__":

@@ -58,7 +58,7 @@ def rearrange_stacks(crate_stacks, filename_moves, mover_9001):
 
 
 def get_top_crates(crate_stacks):
-    """Join the top crates of all stacks into one string (space if no crate.)"""
+    """Join the top crates of all stacks into one string (space if no crate)."""
     return "".join([cs[-1] if cs else " " for cs in crate_stacks.values()])
 
 
