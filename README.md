@@ -1,16 +1,11 @@
 # Advent of Code
 
-Personal repository for solving [Advent of Code](https://adventofcode.com/) 
-puzzles. The solutions are written using Python 3.11.3 and do not rely on
-third-party modules. However, because the scripts import a module from the
-"common" directory, that directory should be added to the PYTHONPATH
-environment variable. The code has been formatted using
-[Black](https://black.readthedocs.io/en/stable/), version 23.3.0, with the
-line length set at 80 characters.
+[Advent of Code](https://adventofcode.com/) is a programming puzzle event that runs during the most wonderful time of the year, every year since 2015. See the [About](https://adventofcode.com/2022/about) page for more information. I was introduced to these puzzles in 2023, and enjoyed solving the 2022 edition, so probably at some point I will also take a shot at the earlier editions!
 
+## About the Solutions
+
+The solutions have been developed using [Python 3.11.3](https://www.python.org/). They do not rely on third-party modules, but scripts do import a module from the "commons" directory. Adding this directory to the PYTHONPATH environment variable ensures this import will be successful. The code has been formatted using [Black 23.3.0](https://black.readthedocs.io/en/stable/), with the line length set to 80 characters.
 
 ## To Be Added
 
-* [ ] Day 16
-* [ ] Day 19
-* [ ] Day 22
+I have obtained the 50 stars, but the solutions for day 16 and day 19 are still missing in this repository, as I would like to do some brushing up first. Coming soon!
