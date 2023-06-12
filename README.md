@@ -8,4 +8,4 @@ The solutions have been developed using [Python 3.11.3](https://www.python.org/)
 
 ## To Be Added
 
-I have obtained the 50 stars, but the solutions for day 16 and day 19 are still missing in this repository, as I would like to do some brushing up first. Coming soon!
+I have obtained the 50 stars, but the solution for day 16 is still missing in this repository, as I would like to do some brushing up first. Coming soon!
