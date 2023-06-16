@@ -29,7 +29,7 @@ def main():
 
 
 def compute_password(filename_map, filename_moves, part=2):
-    """Compute the password from the final position and facing on the board."""    
+    """Compute the password from the final position and facing on the board."""
     cube_net = read_map(filename_map)
     facets = fold_cube_net(cube_net)
     transitions = setup_transitions(facets, part)
@@ -143,7 +143,7 @@ def setup_transitions(facets, part):
     which the current facet is left) is 'mirrored' to the next 'free' row or
     column. Next, functions are established to use this to compute the next row
     and column.
-    """    
+    """
     if part == 1:
         f_transitions = setup_facet_transitions_p1(facets)
     elif part == 2:
@@ -156,11 +156,11 @@ def setup_facet_transitions_p1(facets):
     """
     Set next (facet, facing, mirror) for current (facet, facing) in part 1.
 
-    Note that the wrapping-around rule implies that facings are preserved and 
+    Note that the wrapping-around rule implies that facings are preserved and
     there is no mirroring.
     """
     pos_facets = {f.cn_position: f for f in facets}
-    f_transitions = {}  
+    f_transitions = {}
     for facet_1 in facets:
         ccnp = facet_1.cn_position  # current cube net position
 
@@ -258,8 +258,8 @@ def create_tile_transition_fu(facing_1, facing_2, edge_length):
 
 def simulate_moves(move_list, facets, f_transitions, t_transitions):
     """
-    Simulate the path, and obtain the final row, column, and facing. 
-    
+    Simulate the path, and obtain the final row, column, and facing.
+
     Throughout the execution of this path, the state is given by the current
     facet, the current row and column on the facet, and the current facing. Only
     after reaching the final position, the row and column with respect to the
@@ -272,7 +272,7 @@ def simulate_moves(move_list, facets, f_transitions, t_transitions):
     top_row_facets.sort(key=lambda f: f.cn_position[1])
     frow = 0
     fcol = None
-    for facet in top_row_facets:        
+    for facet in top_row_facets:
         try:
             fcol = facet.is_wall[0].index(False)
         except ValueError:

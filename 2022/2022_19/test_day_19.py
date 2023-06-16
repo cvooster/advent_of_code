@@ -17,9 +17,7 @@ class TestSolution(unittest.TestCase):
 
     def test_aoc_verified_part_1(self):
         """Test whether part 1 outcome is as verified by AoC."""
-        _, quality_level_sum = d19.summarize_evaluations(
-            FILENAME, nr_minutes=24
-        )
+        _, quality_level_sum = d19.summarize_evaluations(FILENAME, nr_minutes=24)
         self.assertEqual(quality_level_sum, 2193)
 
     def test_example_part_2(self):

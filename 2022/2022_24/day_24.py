@@ -41,7 +41,7 @@ def compute_shortest(filename, nr_sink_visits):
             minutes += 1
             if minutes == grid_size * (grid_size + 1):
                 raise ValueError("Reaching the sink is impossible!")
-            
+
         if sink_visit < nr_sink_visits - 1:
             can_reach = copy.deepcopy(no_reach)
             can_reach["sink"] = True
