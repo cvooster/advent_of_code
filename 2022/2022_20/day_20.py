@@ -1,8 +1,8 @@
 """Solution --- Day 20: Grove Positioning System ---"""
 
-import copy
-
 import aoc_tools as aoc
+
+COORDINATE_OFFSETS = (1000, 2000, 3000)
 
 
 def main():
@@ -15,67 +15,96 @@ def main():
 
 def sum_grove_coordinates(filename, decryption_key, nr_mixes):
     """Obtain original list, mix repeatedly, and get the grove coordinates."""
-    original_list = initialize_list(filename, decryption_key)
-    current_list = copy.copy(original_list)
+    original_list, node_zero = initialize_numbers(filename, decryption_key)
     for _ in range(nr_mixes):
-        mix_numbers(original_list, current_list)
-    return sum(get_grove_coordinates(current_list))
+        mix_numbers(original_list)
+    return sum(get_grove_coordinates(node_zero, len(original_list)))
 
 
-def initialize_list(filename, decryption_key):
-    """Read file input, and generate the original list."""
-    number_lines = aoc.read_stripped_lines(filename)
-    if number_lines.count("0") != 1:
+def initialize_numbers(filename, decryption_key):
+    """Read file input, and initialize the mixing process."""
+    lines = aoc.read_stripped_lines(filename)
+    if lines.count("0") != 1:
         raise ValueError("There is not one value '0' in the input file!")
-    original_list = []
-    for idx, line in enumerate(number_lines):
-        original_list.append(MovingNumber(int(line) * decryption_key, idx))
-    return original_list
+    idx_zero = lines.index("0")
+
+    # Link the numbers and store their original order:
+    original_list = [MovingNumber(int(line) * decryption_key) for line in lines]
+    list_len = len(original_list)
+    for idx, node in enumerate(original_list):
+        node.right = original_list[(idx + 1) % list_len]
+        node.left = original_list[(idx - 1) % list_len]
+        node.set_shift(list_len)
+
+    # Return their original order and a reference to the value 0:
+    return original_list, original_list[idx_zero]
 
 
-def mix_numbers(original_list, current_list):
-    """
-    Move all numbers in the order they originally appear in the file.
+def mix_numbers(original_list):
+    """Move all numbers in the order they originally appear in the file."""
+    for node in original_list:
+        if node.shift == 0:
+            continue
 
-    Note that the circularity in this process implies that if a number moves off
-    the left end of the list, it never ends up in the right-most place of the
-    list, and vice versa.
-    """
-    for moving_number in original_list:
-        # Obtain the new index of this number:
-        new_index = moving_number.index + moving_number.number
-        if new_index < 0:
-            new_index = new_index % (len(original_list) - 1)
-        elif new_index > 0:
-            new_index = ((new_index - 1) % (len(original_list) - 1)) + 1
-        # Update the indices of numbers that will shift in response:
-        if new_index > moving_number.index:
-            for i in range(moving_number.index + 1, new_index + 1):
-                current_list[i].index -= 1
-        elif new_index < moving_number.index:
-            for i in range(new_index, moving_number.index):
-                current_list[i].index += 1
-        # Make the move:
-        current_list.insert(new_index, current_list.pop(moving_number.index))
-        moving_number.index = new_index
+        # Obtain the new neighbor nodes:
+        if node.shift > 0:
+            new_left = node
+            for _ in range(node.shift):
+                new_left = new_left.right
+            new_right = new_left.right
+        elif node.shift < 0:
+            new_right = node
+            for _ in range(-node.shift):
+                new_right = new_right.left
+            new_left = new_right.left
+
+        # Remove the node:
+        cur_left = node.left
+        cur_right = node.right
+        cur_left.right = cur_right
+        cur_right.left = cur_left
+
+        # Reinsert the node:
+        node.left = new_left
+        new_left.right = node
+        node.right = new_right
+        new_right.left = node
 
 
-def get_grove_coordinates(current_list):
+def get_grove_coordinates(node_zero, list_len):
     """Identify the three numbers that form the grove coordinates."""
-    index_0 = [mn.number for mn in current_list].index(0)
-    coordinate_1 = current_list[(index_0 + 1000) % len(current_list)].number
-    coordinate_2 = current_list[(index_0 + 2000) % len(current_list)].number
-    coordinate_3 = current_list[(index_0 + 3000) % len(current_list)].number
-    return [coordinate_1, coordinate_2, coordinate_3]
+    node = node_zero
+    coordinates = []
+    for i in range(3):
+        subtrahend = COORDINATE_OFFSETS[i - 1] if i > 0 else 0
+        difference = COORDINATE_OFFSETS[i] - subtrahend
+        for _ in range(difference % list_len):
+            node = node.right
+        coordinates.append(node.number)
+    return coordinates
 
 
 class MovingNumber:
     """Class to represent a number that is being moved in the mixing process."""
 
-    def __init__(self, number, index):
-        """Create a moving number, defined by a number and current index."""
+    def __init__(self, number):
+        """Create a moving number to use as node in a circularly linked list."""
         self.number = number
-        self.index = index
+        self.left = None
+        self.right = None
+        self.shift = None
+
+    def set_shift(self, list_len):
+        """
+        Set the number of positions to shift this number in the mixing process.
+
+        Note that a number is back at its original position when it has moved
+        (list_len - 1) places to the left or to the right.
+        """
+        shift = self.number % (list_len - 1)
+        if shift > (list_len - 1) / 2:
+            shift -= list_len - 1
+        self.shift = shift
 
 
 if __name__ == "__main__":
