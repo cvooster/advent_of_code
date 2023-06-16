@@ -62,17 +62,16 @@ def read_map(filename_map):
 
     # Determine all positions (possibly with white space) in the input file:
     all_positions = []
-    cube_net_max_y = len(map_lines) / edge_length
-    if not cube_net_max_y.is_integer():
+    if len(map_lines) % edge_length != 0:
         raise ValueError("The 2D map is not a cube net!")
-    cube_net_max_y = int(cube_net_max_y)
+    cube_net_max_y = len(map_lines) // edge_length
 
     for idx_y in range(cube_net_max_y):
         rows = range(idx_y * edge_length, (idx_y + 1) * edge_length)
-        cube_net_max_x = min(len(map_lines[row]) for row in rows) / edge_length
-        if not cube_net_max_x.is_integer():
+        if min(len(map_lines[row]) for row in rows) % edge_length != 0:
             raise ValueError("The 2D map is not a cube net!")
-        for idx_x in range(int(cube_net_max_x)):
+        cube_net_max_x = min(len(map_lines[row]) for row in rows) // edge_length
+        for idx_x in range(cube_net_max_x):
             all_positions.append((idx_y, idx_x))
 
     # Check whether positions are tiled and, therefore, part of the cube net:
@@ -141,7 +140,7 @@ def setup_transitions(facets, part):
 
     It is first established how the next facet and facing are determined, and
     whether the 'free' row or column (i.e., the one not implied by the facing at
-    hich the current facet is left) is 'mirrored' to the next 'free' row or
+    which the current facet is left) is 'mirrored' to the next 'free' row or
     column. Next, functions are established to use this to compute the next row
     and column.
     """    
@@ -155,7 +154,7 @@ def setup_transitions(facets, part):
 
 def setup_facet_transitions_p1(facets):
     """
-    Set next facet, facing, and mirroring for part 1.
+    Set next (facet, facing, mirror) for current (facet, facing) in part 1.
 
     Note that the wrapping-around rule implies that facings are preserved and 
     there is no mirroring.
@@ -194,7 +193,7 @@ def setup_facet_transitions_p1(facets):
 
 def setup_facet_transitions_p2(facets):
     """
-    Set next facet, facing, and mirroring for part 2.
+    Set next (facet, facing, mirror) for current (facet, facing) in part 2.
 
     Note that the walking-around-the-cube rule implies that facings can change,
     and there might be mirroring.
@@ -271,16 +270,16 @@ def simulate_moves(move_list, facets, f_transitions, t_transitions):
     # Set initial position:
     top_row_facets = [f for f in facets if f.cn_position[0] == 0]
     top_row_facets.sort(key=lambda f: f.cn_position[1])
-    for i, facet in enumerate(top_row_facets):        
+    frow = 0
+    fcol = None
+    for facet in top_row_facets:        
         try:
             fcol = facet.is_wall[0].index(False)
         except ValueError:
-            if i < len(top_row_facets) - 1:
-                continue
-            else:
-                raise ValueError("There is no open tile on the top row!")
+            continue
         break
-    frow = 0
+    if fcol is None:
+        raise ValueError("There is no open tile on the top row!")
     facing = INITIAL_FACING
 
     # Execute moves:

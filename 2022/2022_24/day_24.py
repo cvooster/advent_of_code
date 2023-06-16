@@ -26,7 +26,6 @@ def compute_shortest(filename, nr_sink_visits):
     """Compute shortest back-and-forth path for given number of sink visits."""
     blizzards, grid_height, grid_width = initialize_blizzards(filename)
     grid_size = grid_width * grid_height
-
     minutes = 0
     no_reach = {
         "source": False,
@@ -42,15 +41,13 @@ def compute_shortest(filename, nr_sink_visits):
             minutes += 1
             if minutes == grid_size * (grid_size + 1):
                 raise ValueError("Reaching the sink is impossible!")
-
-        if sink_visit == nr_sink_visits - 1:
-            break
-
-        can_reach = copy.deepcopy(no_reach)
-        can_reach["sink"] = True
-        while not can_reach["source"]:
-            can_reach = dynamic_programming_update(blizzards, can_reach)
-            minutes += 1
+            
+        if sink_visit < nr_sink_visits - 1:
+            can_reach = copy.deepcopy(no_reach)
+            can_reach["sink"] = True
+            while not can_reach["source"]:
+                can_reach = dynamic_programming_update(blizzards, can_reach)
+                minutes += 1
     return minutes
 
 

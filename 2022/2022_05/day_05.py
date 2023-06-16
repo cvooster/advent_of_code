@@ -1,5 +1,6 @@
 """Solution --- Day 5: Supply Stacks ---"""
 
+from collections import deque
 import re
 
 import aoc_tools as aoc
@@ -28,7 +29,7 @@ def initialize_stacks(filename_initial):
     nr_stacks = int(crate_stack_lines[-1].rstrip()[-1])
     crate_stacks = {}
     for i in range(nr_stacks):
-        crate_stacks[i + 1] = []
+        crate_stacks[i + 1] = deque()
         for line in crate_stack_lines[-2::-1]:
             crate = line[1 + i * STACK_DISTANCE]
             if crate != " ":
@@ -51,9 +52,10 @@ def rearrange_stacks(crate_stacks, filename_moves, mover_9001):
             for _ in range(move_size):
                 crate_stacks[to_stack].append(crate_stacks[from_stack].pop())
         else:
-            crates_to_move = crate_stacks[from_stack][-move_size:]
-            crate_stacks[to_stack].extend(crates_to_move)
-            del crate_stacks[from_stack][-move_size:]
+            crates_to_move = deque()
+            for _ in range(move_size):
+                crates_to_move.appendleft(crate_stacks[from_stack].pop())
+            crate_stacks[to_stack] += crates_to_move
     return crate_stacks
 
 

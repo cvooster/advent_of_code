@@ -173,8 +173,8 @@ def generate_successors(bp, state, value, time_to_go):
     thres_ore = thres_or1
     if valuable_obs:
         thres_ore = max(thres_ore, thres_or2)
-    if valuable_cla:
-        thres_ore = max(thres_ore, thres_or3)
+        if valuable_cla:
+            thres_ore = max(thres_ore, thres_or3)
     valuable_ore = time_to_go >= 3 and resources[0] < thres_ore
 
     # If there is no value in obsidian-collecting and ore-collecting robots,
@@ -282,33 +282,32 @@ def postprocess_state(bp, resources, robots, time_to_go):
     spend the maximum rate until the end of the horizon. If so, set resource and
     robot levels to default values (that are also sufficient).
     """
-    max_obs = bp.cost["geo"]["obs"]
-    thres_obs = max_obs * (time_to_go - 1) - robots[2] * (time_to_go - 2)
+    mx_obs = bp.cost["geo"]["obs"]
+    thres_obs = mx_obs * (time_to_go - 1) - robots[2] * (time_to_go - 2)
     if resources[2] >= thres_obs:
-        resources[2] = max_obs * (time_to_go - 1)
-        robots[2] = max_obs
+        resources[2] = mx_obs * (time_to_go - 1)
+        robots[2] = mx_obs
 
-    max_cla = bp.cost["obs"]["cla"]
-    thres_cla = max_cla * (time_to_go - 2) - robots[1] * (time_to_go - 3)
+    mx_cla = bp.cost["obs"]["cla"]
+    thres_cla = mx_cla * (time_to_go - 2) - robots[1] * (time_to_go - 3)
     if resources[2] >= thres_obs or resources[1] >= thres_cla:
-        resources[1] = max_cla * (time_to_go - 2)
-        robots[1] = max_cla
+        resources[1] = mx_cla * (time_to_go - 2)
+        robots[1] = mx_cla
 
-    max_ore = max(bp.cost[k]["ore"] for k in ("cla", "obs", "geo"))
-    thress_ore = [
-        bp.cost["geo"]["ore"] * (time_to_go - 1) - robots[0] * (time_to_go - 2),
-        bp.cost["obs"]["ore"] * (time_to_go - 2) - robots[0] * (time_to_go - 3),
-        bp.cost["cla"]["ore"] * (time_to_go - 3) - robots[0] * (time_to_go - 4),
-    ]
-    thres_ore = thress_ore[0]
+    mxs_ore = {k: bp.cost[k]["ore"] for k in ("cla", "obs", "geo")}
+    thres_or1 = mxs_ore["geo"] * (time_to_go - 1) - robots[0] * (time_to_go - 2)
+    thres_or2 = mxs_ore["obs"] * (time_to_go - 2) - robots[0] * (time_to_go - 3)
+    thres_or3 = mxs_ore["cla"] * (time_to_go - 3) - robots[0] * (time_to_go - 4)
+
+    thres_ore = thres_or1
     if resources[2] < thres_obs:
-        thres_ore = max(thres_ore, thress_ore[1])
+        thres_ore = max(thres_ore, thres_or2)
         if resources[1] < thres_cla:
-            thres_ore = max(thres_ore, thress_ore[2])
+            thres_ore = max(thres_ore, thres_or3)
 
     if resources[0] >= thres_ore:
-        resources[0] = max_ore * (time_to_go - 1)
-        robots[0] = max_ore
+        resources[0] = max(mxs_ore.values()) * (time_to_go - 1)
+        robots[0] = max(mxs_ore.values())
     return resources, robots
 
 
