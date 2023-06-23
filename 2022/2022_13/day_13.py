@@ -60,7 +60,7 @@ def check_order(left, right):
 
     while not (is_correct or is_incorrect):
         try:
-            # Return next elements if both lists have not run out of elements:
+            # Obtain next elements if both lists have not run out of elements:
             elem_left, elem_right = next(paired_lists)
         except StopIteration:
             # Check which list ran out; return to outer level if both did:
