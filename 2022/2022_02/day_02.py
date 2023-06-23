@@ -14,7 +14,8 @@ def main():
 def evaluate_strategy_guide(filename, part):
     """Read file input, and calculate the total score of the strategy guide."""
     round_lines = aoc.read_stripped_lines(filename)
-    return sum(get_round_score(part)[line] for line in round_lines)
+    round_score = get_round_score(part)
+    return sum(round_score[line] for line in round_lines)
 
 
 def get_round_score(part):

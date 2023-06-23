@@ -3,7 +3,7 @@
 import aoc_tools as aoc
 
 START_VALUE = 1
-CYCLES = list(range(20, 260, 40))
+CYCLES = tuple(range(20, 260, 40))
 PIXEL_WIDTH = 40
 PIXEL_HEIGHT = 6
 NR_PIXELS = PIXEL_WIDTH * PIXEL_HEIGHT
