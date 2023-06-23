@@ -57,10 +57,13 @@ def check_order(left, right):
     is_correct = False
     is_incorrect = False
     paired_lists = zip(left, right)
+
     while not (is_correct or is_incorrect):
         try:
+            # Return next elements if both lists have not run out of elements:
             elem_left, elem_right = next(paired_lists)
         except StopIteration:
+            # Check which list ran out; return to outer level if both did:
             if len(left) == len(right):
                 break
             elif len(left) < len(right):
@@ -68,6 +71,8 @@ def check_order(left, right):
             elif len(left) > len(right):
                 is_incorrect = True
         else:
+            # Check whether elements are integers or lists. If both elements are
+            # integers, make a direct comparison:
             if isinstance(elem_left, int) and isinstance(elem_right, int):
                 if elem_left == elem_right:
                     continue
@@ -75,7 +80,8 @@ def check_order(left, right):
                     is_correct = True
                 elif elem_left > elem_right:
                     is_incorrect = True
-            # If one of the elements is a list, return after lists are compared:
+            # Otherwise, convert the integer element (if any) to a list, and
+            # move into the comparison of two lists:
             elif isinstance(elem_left, list) and isinstance(elem_right, int):
                 is_correct, is_incorrect = check_order(elem_left, [elem_right])
             elif isinstance(elem_left, int) and isinstance(elem_right, list):

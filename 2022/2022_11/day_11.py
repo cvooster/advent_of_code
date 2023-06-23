@@ -58,7 +58,7 @@ def play_keep_away(monkeys, nr_rounds, worry_management):
     factor_out = math.prod([mk.test_divisor for mk in monkeys])
     for _ in range(nr_rounds):
         for monkey in monkeys:
-            for _ in range(len(monkey.items)):
+            while monkey.items:
                 worry_level = monkey.throw_item()
                 worry_level = monkey.operation_function(worry_level)
                 if worry_management == 1:
