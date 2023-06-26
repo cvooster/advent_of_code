@@ -18,89 +18,79 @@ def calculate_surface(filename, outer=False):
     """Loop through cubes to calculate the total surface or outer surface."""
     cube_list = set_cubes(filename)
     if not outer:
-        droplet_surface = check_facets(cube_list)
+        return check_facets(cube_list)
     else:
-        is_accessible = map_accessibility(cube_list)
-        droplet_surface = check_outer_facets(cube_list, is_accessible)
-    return droplet_surface
+        return check_outer_facets(cube_list, map_accessibility(cube_list))
 
 
 def set_cubes(filename):
-    """Read file input, and create a list with coordinates of the cubes."""
+    """Read file input, and create a set with cube coordinates."""
     cube_lines = aoc.read_stripped_lines(filename)
     cube_regex = re.compile(r"(\d+),(\d+),(\d+)")
-    cube_list = []
+    cube_set = set()
     for line in cube_lines:
-        cube_list.append([int(x) for x in cube_regex.search(line).groups()])
-    return cube_list
+        cube_set.add(tuple(int(x) for x in cube_regex.search(line).groups()))
+    return cube_set
 
 
-def check_facets(cube_list):
+def check_facets(cube_set):
     """For all facets, check whether they connect to empty space."""
     droplet_surface = 0
-    for cube in cube_list:
-        if [cube[0] + 1, cube[1], cube[2]] not in cube_list:
+    for cube in cube_set:
+        if (cube[0] + 1, cube[1], cube[2]) not in cube_set:
             droplet_surface += 1
-        if [cube[0] - 1, cube[1], cube[2]] not in cube_list:
+        if (cube[0] - 1, cube[1], cube[2]) not in cube_set:
             droplet_surface += 1
-        if [cube[0], cube[1] + 1, cube[2]] not in cube_list:
+        if (cube[0], cube[1] + 1, cube[2]) not in cube_set:
             droplet_surface += 1
-        if [cube[0], cube[1] - 1, cube[2]] not in cube_list:
+        if (cube[0], cube[1] - 1, cube[2]) not in cube_set:
             droplet_surface += 1
-        if [cube[0], cube[1], cube[2] + 1] not in cube_list:
+        if (cube[0], cube[1], cube[2] + 1) not in cube_set:
             droplet_surface += 1
-        if [cube[0], cube[1], cube[2] - 1] not in cube_list:
+        if (cube[0], cube[1], cube[2] - 1) not in cube_set:
             droplet_surface += 1
     return droplet_surface
 
 
-def map_accessibility(cube_list):
+def map_accessibility(cube_set):
     """
     Determine whether empty spaces are accessible from outside.
 
-    A box is created that contains the droplet in its intertior, and the outside
-    is initialized as accessible. The procedure then iteratively identifies
-    empty spaces in the interior as accessible until no new accessible spaces
-    are identified.
+    A box containing the droplet in its iterior is created. With the outside
+    initialized as accessible, the procedure iteratively identifies accessible
+    empty spaces in the interior until all such spaces have been identified.
     """
-    box_min = [min(c[dim] for c in cube_list) - 1 for dim in range(3)]
-    box_max = [max(c[dim] for c in cube_list) + 1 for dim in range(3)]
-    box = product(*[range(box_min[dim], box_max[dim] + 1) for dim in range(3)])
+    bmin = [min(c[i] for c in cube_set) - 1 for i in range(3)]
+    bmax = [max(c[i] for c in cube_set) + 1 for i in range(3)]
+    box_list = list(product(*[range(bmin[i], bmax[i] + 1) for i in range(3)]))
+    interior = list(product(*[range(bmin[i] + 1, bmax[i]) for i in range(3)]))
 
-    is_accessible = {}
-    for pos in box:
-        if all(box_min[dim] < pos[dim] < box_max[dim] for dim in range(3)):
-            is_accessible[pos] = False
-        else:
-            is_accessible[pos] = True
+    is_accessible = {pos: True for pos in box_list}
+    for pos in interior:
+        is_accessible[pos] = False
 
-    is_mapped = False
-    while not is_mapped:
-        is_mapped = True
-        for i in range(box_min[0] + 1, box_max[0]):
-            for j in range(box_min[1] + 1, box_max[1]):
-                for k in range(box_min[2] + 1, box_max[2]):
-                    if (
-                        not [i, j, k] in cube_list
-                        and not is_accessible[(i, j, k)]
-                        and (
-                            is_accessible[(i - 1, j, k)]
-                            or is_accessible[(i + 1, j, k)]
-                            or is_accessible[(i, j - 1, k)]
-                            or is_accessible[(i, j + 1, k)]
-                            or is_accessible[(i, j, k - 1)]
-                            or is_accessible[(i, j, k + 1)]
-                        )
-                    ):
-                        is_accessible[(i, j, k)] = True
-                        is_mapped = False
+    is_complete = False
+    while not is_complete:
+        is_complete = True
+        for i, j, k in interior:
+            if (i, j, k) not in cube_set and not is_accessible[(i, j, k)]:
+                if (
+                    is_accessible[(i - 1, j, k)]
+                    or is_accessible[(i + 1, j, k)]
+                    or is_accessible[(i, j - 1, k)]
+                    or is_accessible[(i, j + 1, k)]
+                    or is_accessible[(i, j, k - 1)]
+                    or is_accessible[(i, j, k + 1)]
+                ):
+                    is_accessible[(i, j, k)] = True
+                    is_complete = False
     return is_accessible
 
 
-def check_outer_facets(cube_list, is_accessible):
+def check_outer_facets(cube_set, is_accessible):
     """For all facets, check whether they connect to accessible empty space."""
     droplet_surface = 0
-    for cube in cube_list:
+    for cube in cube_set:
         if is_accessible[(cube[0] + 1, cube[1], cube[2])]:
             droplet_surface += 1
         if is_accessible[(cube[0] - 1, cube[1], cube[2])]:

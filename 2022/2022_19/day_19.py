@@ -131,19 +131,26 @@ def prune_using_monotonicity(node_list):
     and so are all resource and robot levels (hence, the maximum value-to-go is
     also lower or equal), that state-value pair can be pruned.
     """
-    to_prune = [False] * len(node_list)
-    for idx_1, (state_1, value_1) in enumerate(node_list):
-        for delta, (state_2, value_2) in enumerate(node_list[idx_1 + 1 :]):
-            idx_2 = idx_1 + delta + 1
-            if to_prune[idx_2]:
+    if len(node_list) <= 1:
+        return node_list
+    else:
+        to_prune = [False] * len(node_list)
+        for idx_1 in range(len(node_list)):
+            if to_prune[idx_1]:
                 continue
-            elif value_2 <= value_1 and state_2 <= state_1:
-                to_prune[idx_2] = True
-            elif value_1 <= value_2 and state_1 <= state_2:
-                to_prune[idx_1] = True
-                break
-    pruned_list = [n for n, tp in zip(node_list, to_prune) if not tp]
-    return pruned_list
+            state_1, value_1 = node_list[idx_1]
+            for idx_2 in range(idx_1 + 1, len(node_list)):
+                if to_prune[idx_2]:
+                    continue
+                state_2, value_2 = node_list[idx_2]
+                # Compare values and states:
+                if value_2 <= value_1 and state_2 <= state_1:
+                    to_prune[idx_2] = True
+                elif value_1 <= value_2 and state_1 <= state_2:
+                    to_prune[idx_1] = True
+                    break
+        pruned_list = [n for n, tp in zip(node_list, to_prune) if not tp]
+        return pruned_list
 
 
 def generate_successors(bp, state, value, time_to_go):
@@ -330,9 +337,9 @@ class State:
 
     def __le__(self, other):
         """Equip this class with the <= operator."""
-        le_1 = all(self.resources[i] <= other.resources[i] for i in range(3))
-        le_2 = all(self.robots[i] <= other.robots[i] for i in range(3))
-        return le_1 and le_2
+        return all(
+            self.resources[i] <= other.resources[i] for i in range(3)
+        ) and all(self.robots[i] <= other.robots[i] for i in range(3))
 
 
 if __name__ == "__main__":
