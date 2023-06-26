@@ -44,10 +44,8 @@ def rearrange_stacks(crate_stacks, filename_moves, mover_9001):
     move_regex = re.compile(r"move (\d+) from (\d+) to (\d+)")
     move_lines = aoc.read_stripped_lines(filename_moves)
     for line in move_lines:
-        move_size, from_stack, to_stack = move_regex.search(line).groups()
-        move_size = int(move_size)
-        from_stack = int(from_stack)
-        to_stack = int(to_stack)
+        move_data = (int(x) for x in move_regex.search(line).groups())
+        move_size, from_stack, to_stack = move_data
         if not mover_9001:
             for _ in range(move_size):
                 crate_stacks[to_stack].append(crate_stacks[from_stack].pop())

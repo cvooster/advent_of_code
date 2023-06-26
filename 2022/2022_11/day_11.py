@@ -32,7 +32,7 @@ def calculate_business_level(filename, nr_rounds, worry_management):
     if len(monkeys) < 2:
         raise ValueError("Too few monkeys to calculate business level!")
     play_keep_away(monkeys, nr_rounds, worry_management)
-    return math.prod(sorted([mk.nr_inspections for mk in monkeys])[-2:])
+    return math.prod(sorted(mk.nr_inspections for mk in monkeys)[-2:])
 
 
 def initialize_monkeys(filename):
@@ -55,7 +55,7 @@ def initialize_monkeys(filename):
 
 def play_keep_away(monkeys, nr_rounds, worry_management):
     """Simulate a number of rounds of keep away."""
-    factor_out = math.prod([mk.test_divisor for mk in monkeys])
+    factor_out = math.prod(mk.test_divisor for mk in monkeys)
     for _ in range(nr_rounds):
         for monkey in monkeys:
             while monkey.items:

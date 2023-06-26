@@ -19,12 +19,12 @@ def main():
 
 def calculate_number(filename, override_humn=False):
     """Initialize monkeys, and simulate their yelling until answer is known."""
-    monkeys = initialize_monkeys(filename, override_humn)
-    return yell_numbers(monkeys, override_humn)
+    monkeys, root_monkey = initialize_monkeys(filename, override_humn)
+    return yell_numbers(monkeys, root_monkey, override_humn)
 
 
 def initialize_monkeys(filename, override_humn):
-    """Read file input, and initialize the monkeys."""
+    """Read file input, initialize the monkeys, and identify the root monkey."""
     monkey_lines = aoc.read_stripped_lines(filename)
     monkeys = []
     for line in monkey_lines:
@@ -35,33 +35,33 @@ def initialize_monkeys(filename, override_humn):
             monkeys.append(Monkey(name, int(line[6:]), 0))
         elif line[6].isalpha():
             monkeys.append(Monkey(name))
+    lookup = {m.name: m for m in monkeys}
     for line, monkey in zip(monkey_lines, monkeys):
         if line[6].isalpha():
-            input_1 = next(m for m in monkeys if m.name == line[6:10])
-            input_2 = next(m for m in monkeys if m.name == line[13:17])
+            input_1 = lookup[line[6:10]]
+            input_2 = lookup[line[13:17]]
             operation = line[11]
             monkey.set_calculation(input_1, input_2, operation)
-    return monkeys
+    root_monkey = lookup["root"]
+    return monkeys, root_monkey
 
 
-def yell_numbers(monkeys, override_humn):
+def yell_numbers(monkeys, root_monkey, override_humn):
     """Simulate yelling of linear expressions until root inputs are known."""
-    root_monkey = next(m for m in monkeys if m.name == "root")
-    root_input_1 = root_monkey.inputs[0]
-    root_input_2 = root_monkey.inputs[1]
-    while root_input_1.constant is None or root_input_2.constant is None:
+    while any(i.constant is None for i in root_monkey.inputs):
         for monkey in monkeys:
-            if monkey.constant is None and all(
-                i.constant is not None for i in monkey.inputs
-            ):
-                monkey.perform_calculation()
+            if monkey.constant is None:
+                if all(i.constant is not None for i in monkey.inputs):
+                    monkey.perform_calculation()
+
+    # The root inputs are known, and the answer can be computed:
     if not override_humn:
         root_monkey.perform_calculation()
         answer = root_monkey.constant
     elif override_humn:
-        answer = (root_input_2.constant - root_input_1.constant) / (
-            root_input_1.slope - root_input_2.slope
-        )
+        num = root_monkey.inputs[1].constant - root_monkey.inputs[0].constant
+        denom = root_monkey.inputs[0].slope - root_monkey.inputs[1].slope
+        answer = num / denom
     return int(answer) if answer.is_integer() else answer
 
 
@@ -106,11 +106,10 @@ class Monkey:
     def _perform_multiplication(self):
         """Perform a multiplication."""
         self.constant = self.inputs[0].constant * self.inputs[1].constant
-        if self.inputs[0].slope == 0 or self.inputs[1].slope == 0:
-            self.slope = (
-                self.inputs[0].slope * self.inputs[1].constant
-                + self.inputs[0].constant * self.inputs[1].slope
-            )
+        if self.inputs[0].slope == 0:
+            self.slope = self.inputs[0].constant * self.inputs[1].slope
+        elif self.inputs[1].slope == 0:
+            self.slope = self.inputs[0].slope * self.inputs[1].constant
         else:
             raise ValueError("This results in a non-linear expression!")
 
